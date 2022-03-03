@@ -26,7 +26,7 @@ class Data:
             self.coord = json.load(coord)
         with open("./Data/Dist.json", "r") as dist:
             self.dist = json.load(dist)
-        with open("./Data/Cost.json") as cost:
+        with open("./Data/Cost.json", "r") as cost:
             self.cost = json.load(cost)
 
     # Calculate the cost for a given path

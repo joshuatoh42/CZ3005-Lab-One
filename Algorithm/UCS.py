@@ -4,7 +4,7 @@ from Classes.Data import result_to_txt
 
 # Uniform-Cost Search Algorithm
 def search(Data, has_energy_constraint):
-    # Number of paths that did not satisfy energy constraint
+    # Number of frontier that did not satisfy energy constraint
     fail_count = 0
     # File name based on whether there is energy constraint
     if has_energy_constraint:
@@ -13,18 +13,18 @@ def search(Data, has_energy_constraint):
         file_name = "Task1_ucs_without_energy_constraint"
     # Start Uniform-Cost Search
     print("Initialising Uniform-Cost Search...")
-    # List of paths aka frontier - priority given to lowest distance
-    paths = PriorityQueue()
-    # Structure of Queue (Distance, Cost, Node) so paths will be automatically sorted according to the shortest distance
-    paths.put((0, 0, Data.start_node))
+    # List of frontier aka frontier - priority given to lowest distance
+    frontier = PriorityQueue()
+    # Structure of Priority Queue (Distance, Cost, Path) so frontier will be automatically sorted according to the shortest distance
+    frontier.put((0, 0, Data.start_node))
     # Empty list to initialise list of nodes that have been explored
     explored = []
     # Start the search
     print("Starting Uniform-Cost Search...")
     # As long as priority queue has vertices
-    while paths:
+    while frontier:
         # Shortest path in the priority queue
-        curr_distance, curr_cost, curr_path = paths.get()
+        curr_distance, curr_cost, curr_path = frontier.get()
         # Get the last node added to the path
         curr_node = curr_path[-1]
         # Mark the node as explored since the shortest path to this node has been found
@@ -50,7 +50,7 @@ def search(Data, has_energy_constraint):
                 # Add current neighbour as new node on path
                 new_path.append(neighbour)
                 # Get the distance between the current node and its neighbour
-                node_pair = curr_node + ',' + new_path[-1]
+                node_pair = curr_node + ',' + neighbour
                 distance = Data.dist[node_pair]
                 # New total distance traversed after adding neighobur
                 new_distance = distance + curr_distance
@@ -62,13 +62,13 @@ def search(Data, has_energy_constraint):
                 if has_energy_constraint:
                     # Check if cost is within the energy constraint
                     if new_cost <= Data.energy_budget:
-                        paths.put((new_distance, new_cost, new_path))
+                        frontier.put((new_distance, new_cost, new_path))
                     # Add to failed path if path exceeds energy cost
                     else:
                         fail_count += 1
                 # If there is no energy constraint, check is not needed
                 else:
-                    paths.put((new_distance, new_cost, new_path))
+                    frontier.put((new_distance, new_cost, new_path))
 
     # No valid path if no more vertices are in the Priority Queue
     return "No path found from " + Data.start_node + " to " + Data.end_node

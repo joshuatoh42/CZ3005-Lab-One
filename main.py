@@ -5,6 +5,7 @@ import Algorithm.AStar as AStar
 
 # Import Required Libraries
 from time import time
+import json
 
 # Main Function
 def main():
@@ -40,6 +41,19 @@ def main():
     end_time = time()
     print("Time elapsed: " + str(end_time - start_time))
     print("-----------------------------------------------------------------------------------------------------------------")
+
+def test(path):
+    nodes = path.split("->")
+    distance = 0
+    cost = 0
+    data = Data("1", "50", 287932)
+    for node in range(len(nodes) - 1):
+        pair = nodes[node] + "," + nodes[node + 1]
+        distance += data.dist[pair]
+        cost += data.cost[pair]
+    print("Testing Path =", path)
+    print("Distance =", distance)
+    print("Cost =", cost)
 
 # Run the following when the file is ran
 if __name__ == "__main__":

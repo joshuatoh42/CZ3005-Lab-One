@@ -7,7 +7,7 @@ import json
 
 # Function to store output as txt file
 def result_to_txt(name, path, distance, cost):
-    with open(name + "_Output.txt", "w") as file:
+    with open(name + "_output.txt", "w") as file:
         file.write("Shortest path found: " + path + '.\n')
         file.write("Shortest distance: " + str(distance) + '.\n')
         file.write("Total energy cost: " + str(cost) + '.')

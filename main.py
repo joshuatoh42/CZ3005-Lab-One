@@ -5,7 +5,6 @@ import Algorithm.AStar as AStar
 
 # Import Required Libraries
 from time import time
-import json
 
 # Main Function
 def main():

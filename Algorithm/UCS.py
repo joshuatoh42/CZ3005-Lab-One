@@ -19,6 +19,8 @@ def search(Data, has_energy_constraint):
     frontier.put((0, 0, Data.start_node))
     # Empty list to initialise list of nodes that have been explored
     explored = []
+    # Dictionary to store costs of visited nodes
+    cost_dict = {Data.start_node: 0}
     # Start the search
     print("Starting Uniform-Cost Search...")
     # As long as priority queue has vertices
@@ -43,32 +45,34 @@ def search(Data, has_energy_constraint):
             return "UCS COMPLETE"
 
         for neighbour in Data.graph[curr_node]:
+            node_pair = curr_node + ',' + neighbour
+            # Energy cost of neighbour
+            cost = Data.cost[node_pair]
+            # New total energy cost after adding cost of neighbour
+            new_cost = cost + curr_cost
             # If neighbour has not been explored, explore the path
-            if neighbour not in explored:
+            if (neighbour not in explored) or (has_energy_constraint and cost_dict[neighbour] > new_cost):
                 # Create a new path using the current path it is exploring
                 new_path = list(curr_path)
                 # Add current neighbour as new node on path
                 new_path.append(neighbour)
                 # Get the distance between the current node and its neighbour
-                node_pair = curr_node + ',' + neighbour
                 distance = Data.dist[node_pair]
                 # New total distance traversed after adding neighobur
                 new_distance = distance + curr_distance
-                # Energy cost of neighbour
-                cost = Data.cost[node_pair]
-                # New total energy cost after adding cost of neighbour
-                new_cost = cost + curr_cost
                 # Check if there is energy constraint
                 if has_energy_constraint:
                     # Check if cost is within the energy constraint
                     if new_cost <= Data.energy_budget:
                         frontier.put((new_distance, new_cost, new_path))
+                        cost_dict[neighbour] = new_cost
                     # Add to failed path if path exceeds energy cost
                     else:
                         fail_count += 1
                 # If there is no energy constraint, check is not needed
                 else:
                     frontier.put((new_distance, new_cost, new_path))
+                    cost_dict[neighbour] = new_cost
 
     # No valid path if no more vertices are in the Priority Queue
     return "No path found from " + Data.start_node + " to " + Data.end_node

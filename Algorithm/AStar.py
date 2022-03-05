@@ -22,6 +22,8 @@ def search(Data, has_energy_constraint, weight = 1):  # Default weight of 1 if n
     paths.put((initial_distance, 0, Data.start_node))
     # Empty list to initialise list of nodes that have been explored
     explored = []
+    # Dictionary to store costs of visited nodes
+    cost_dict = {Data.start_node: 0}
     # Store current distances for explored paths
     distance_so_far = {Data.start_node: 0}
     # Start the search
@@ -56,8 +58,12 @@ def search(Data, has_energy_constraint, weight = 1):  # Default weight of 1 if n
             distance = Data.dist[node_pair]
             # G(n)
             new_distance = distance + curr_distance
+            # Energy cost of neighbour
+            cost = Data.cost[node_pair]
+            # New total energy cost after adding cost of neighbour
+            new_cost = cost + curr_cost
             # Add to dictionary containing f(n) values of nodes explored if not explored or a shorter distance was found
-            if neighbour not in explored or new_distance < distance_so_far[neighbour]:
+            if (neighbour not in explored) or (new_distance < distance_so_far[neighbour]) or (has_energy_constraint and cost_dict[neighbour] > new_cost):
                 distance_so_far[neighbour] = new_distance
                 # Create a new path using the current path it is exploring
                 new_path = list(curr_path)
@@ -67,21 +73,19 @@ def search(Data, has_energy_constraint, weight = 1):  # Default weight of 1 if n
                 heuristic_value = get_heuristic(Data, neighbour, weight)
                 # f(n) = g(n) + h(n)
                 new_distance += heuristic_value
-                # Energy cost of neighbour
-                cost = Data.cost[node_pair]
-                # New total energy cost after adding cost of neighbour
-                new_cost = cost + curr_cost
                 # Check if there is energy constraint
                 if has_energy_constraint:
                     # Check if cost is within the energy constraint
                     if new_cost <= Data.energy_budget:
                         paths.put((new_distance, new_cost, new_path))
+                        cost_dict[neighbour] = new_cost
                     # If path fails energy constraint
                     else:
                         fail_count += 1
                 # If there is no energy constraint, check is not needed
                 else:
                     paths.put((new_distance, new_cost, new_path))
+                    cost_dict[neighbour] = new_cost
 
     # No valid path if no more vertices are in the Priority Queue
     print("A* FAILED")

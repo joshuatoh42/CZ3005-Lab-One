@@ -98,6 +98,6 @@ def get_heuristic(data, vertex, weight):
     # Differences in x-coordinates and y-coordinates
     x_diff = x_end - x_curr
     y_diff = y_end - y_curr
-    # Return weight * straight-line distance
-    return weight * (sqrt(x_diff ** 2 + y_diff ** 2))
+    return weight * (x_diff+y_diff)
+    #return weight * (sqrt(x_diff ** 2 + y_diff ** 2))
 
